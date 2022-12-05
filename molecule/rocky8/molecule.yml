@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+platforms:
+  - name: firewalld-webvm-rocky8
+    image: rockylinux:8
+    image_version: latest
+    command: /sbin/init
+  - name: firewalld-dbvm-rocky8
+    image: rockylinux:8
+    image_version: latest
+    command: /sbin/init
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  playbooks:
+    converge: ../resources/playbooks/converge.yml
+scenario:
+  name: rocky8
+verifier:
+  # name: testinfra
+  # directory: ../resources/tests/
+  # lint:
+  #   name: flake8
+  name: ansible

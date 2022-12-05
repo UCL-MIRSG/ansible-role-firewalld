@@ -1,0 +1,12 @@
+---
+# defaults file for ../mirsg-firewall-ansible-role
+firewall_for_web_vm: true
+firewall_for_db_vm: false
+zone_ports: []
+open_zone_to_server_ip: ""
+internal_port: ""
+internal_networks: [] # not changed
+default_networks: [] # was work_networks
+additional_networks: []
+allow_public_access: false
+web_rich_rules: []

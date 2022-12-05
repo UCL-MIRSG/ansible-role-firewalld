@@ -1,0 +1,51 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+platforms:
+  - name: firewalld-webvm-centos7
+    image: centos/systemd
+    image_version: latest
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    pre_build_image: false
+    privileged: true
+  - name: firewalld-dbvm-centos7
+    image: centos/systemd
+    image_version: latest
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    pre_build_image: false
+    privileged: true
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  playbooks:
+    converge: ../resources/playbooks/converge.yml
+  inventory:
+    host_vars:
+      firewalld-webvm-centos7:
+        firewall_for_web_vm: true
+      firewalld-dbvm-centos7:
+        firewall_for_web_vm: false
+scenario:
+  name: centos7
+  converge_sequence:
+    - converge
+verifier:
+  # name: testinfra
+  name: ansible
