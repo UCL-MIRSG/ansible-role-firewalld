@@ -17,7 +17,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          sudo apt-get update && apt-get -y install rsync
+          sudo apt-get update && sudo apt-get -y install rsync
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
       - name: Test with molecule
