@@ -11,23 +11,27 @@ platforms:
   - name: firewalld-webvm-centos7
     image: centos/systemd
     image_version: latest
-    command: /sbin/init
+    env:
+      container: docker
     tmpfs:
       - /run
       - /tmp
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns: host
     pre_build_image: false
     privileged: true
   - name: firewalld-dbvm-centos7
     image: centos/systemd
     image_version: latest
-    command: /sbin/init
+    env:
+      container: docker
     tmpfs:
       - /run
       - /tmp
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns: host
     pre_build_image: false
     privileged: true
 provisioner:
