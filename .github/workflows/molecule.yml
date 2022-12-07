@@ -9,6 +9,9 @@ jobs:
       matrix:
         python-version: [3.9]
         # python-version: [3.8, 3.9]
+        molecule_docker_image:
+          - rockylinux:8
+          - systemd/centos7
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -22,4 +25,6 @@ jobs:
           python3 -m pip install -r requirements.txt
       - name: Test with molecule
         run: |
-          molecule test -s centos7
+          molecule test
+        env:
+          MOLECULE_DOCKER_IMAGE: ${{ matrix.molecule_docker_image }}
