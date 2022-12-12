@@ -2,16 +2,15 @@
 name: Molecule Test
 on: [push, pull_request]
 jobs:
-  build:
+  molecule:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.9]
-        # python-version: [3.8, 3.9]
+        python-version: [3.8, 3.9]
         molecule_docker_image:
           - rockylinux:8
-          - systemd/centos7
+          # - systemd/centos7
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -27,4 +26,6 @@ jobs:
         run: |
           molecule test
         env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
           MOLECULE_DOCKER_IMAGE: ${{ matrix.molecule_docker_image }}

@@ -9,12 +9,9 @@ lint: |
   ansible-lint
 platforms:
   - name: firewall_db
-    image: ${MOLECULE_DOCKER_IMAGE:-centos/systemd}
+    image: ${MOLECULE_DOCKER_IMAGE:-rockylinux:8}
     image_version: latest
     command: ""
-    tmpfs:
-      - /run
-      - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
@@ -24,12 +21,9 @@ platforms:
       - db
       - docker
   - name: firewall_web
-    image: ${MOLECULE_DOCKER_IMAGE:-centos/systemd}
+    image: ${MOLECULE_DOCKER_IMAGE:-rockylinux:8}
     image_version: latest
     command: ""
-    tmpfs:
-      - /run
-      - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
