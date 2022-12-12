@@ -30,8 +30,9 @@ jinja2-time==0.2.0
 jsonschema==4.17.3
 MarkupSafe==2.1.1
 mccabe==0.7.0
-molecule==4.0.3
-molecule-docker==2.1.0
+molecule==4.0.4
+# Pending the release of https://github.com/ansible-community/molecule-docker/pull/185
+git+https://github.com/ansible-community/molecule-docker.git@5b26cc6cedb59de813229fd8a5bed7eb194db230#egg=molecule-docker
 mypy-extensions==0.4.3
 nodeenv==1.7.0
 packaging==21.3
