@@ -8,7 +8,7 @@ lint: |
   yamllint .
   ansible-lint
 platforms:
-  - name: firewall-db
+  - name: firewall_db
     image: ${MOLECULE_DOCKER_IMAGE:-centos/systemd}
     image_version: latest
     command: ""
@@ -20,7 +20,10 @@ platforms:
     cgroupns_mode: host
     pre_build_image: false
     privileged: true
-  - name: firewall-web
+    groups:
+      - db
+      - docker
+  - name: firewall_web
     image: ${MOLECULE_DOCKER_IMAGE:-centos/systemd}
     image_version: latest
     command: ""
@@ -32,6 +35,9 @@ platforms:
     cgroupns_mode: host
     pre_build_image: false
     privileged: true
+    groups:
+      - docker
+      - web
 provisioner:
   name: ansible
   lint:
@@ -40,11 +46,26 @@ provisioner:
   playbooks:
     converge: ./converge.yml
   inventory:
-    host_vars:
-      firewall-db:
-        firewall_for_web_vm: false
-      firewall-web:
+    group_vars:
+      docker:
+        additional_networks: []
+        default_networks:
+          - "0.0.0.0/0"
+        internal_networks:
+          - "172.17.0.0/16"
+        web_rich_rules: []
+      db:
+        allow_public_access: false
+        firewall_for_db_vm: true
+        open_zone_to_server_ip: "172.17.0.3"
+        internal_port: "5432"
+        zone_ports: []
+      web:
+        allow_public_access: true
         firewall_for_web_vm: true
+        zone_ports:
+          - "4063"
+          - "4064"
 verifier:
   # name: testinfra
   # directory: ../resources/tests/
