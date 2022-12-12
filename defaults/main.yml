@@ -7,6 +7,6 @@ open_zone_to_server_ip: ""
 internal_port: ""
 internal_networks: [] # not changed
 default_networks: [] # was work_networks
-additional_networks: []
+additional_networks: [] # was collaborator_networks
 allow_public_access: false
 web_rich_rules: []
