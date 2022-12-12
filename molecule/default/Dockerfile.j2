@@ -28,5 +28,7 @@ RUN if [ $(command -v apt-get) ]; then export DEBIAN_FRONTEND=noninteractive && 
     elif [ $(command -v apk) ]; then apk update && apk add --no-cache python3 sudo bash ca-certificates firewalld firewall-config firewall-applet; \
     elif [ $(command -v xbps-install) ]; then xbps-install -Syu && xbps-install -y python3 sudo bash ca-certificates iproute2 firewalld firewall-config firewall-applet && xbps-remove -O; fi
 
+COPY ./firewalld.conf /etc/firewalld/firewalld.conf
+
 STOPSIGNAL SIGRTMIN+3
 CMD ["/usr/lib/systemd/systemd"]
