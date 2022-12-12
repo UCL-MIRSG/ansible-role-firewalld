@@ -66,7 +66,7 @@
     immediate: true
     state: enabled
   with_items:
-    - "{{ default_networks }}"
+    - "{{ internal_networks }}"
 # end internal zone config
 
 # public zone config
@@ -176,7 +176,7 @@
   changed_when: false
   failed_when: false
 
-- name: Open internal postgresql port
+- name: Open internal port {{ internal_port }}
   become: true
   ansible.posix.firewalld:
     rich_rule: "rule family=ipv4 source address={{ open_zone_to_server_ip }}/32 port protocol=tcp port={{ internal_port }} accept"
