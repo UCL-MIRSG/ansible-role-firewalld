@@ -1,0 +1,10 @@
+name: Add issue to the projects board
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  add-issue-to-project:
+    uses: UCL-MIRSG/reusable-workflows/.github/workflows/add-to-project.yml@main
