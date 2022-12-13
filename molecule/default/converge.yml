@@ -5,4 +5,4 @@
   tasks:
     - name: "Include ansible-role-firewalld"
       ansible.builtin.include_role:
-        name: "ansible-role-firewalld"
+        name: "ansible-role-dual-vm-firewalld"
