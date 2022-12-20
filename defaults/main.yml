@@ -1,5 +1,6 @@
 ---
 # defaults file for ../mirsg-firewall-ansible-role
+vm_firewall_type: "web"
 zone_ports: []
 open_zone_to_server_ip: ""
 internal_port: ""

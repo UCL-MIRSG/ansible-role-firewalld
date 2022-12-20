@@ -2,7 +2,7 @@
 # tasks file for ../mirsg-firewall-ansible-role
 - name: Get hosts group
   ansible.builtin.debug:
-    msg: "{{ group_names }}"
+    msg: "{{ vm_firewall_type }}"
 
 - name: Assert hosts group
   ansible.builtin.assert:

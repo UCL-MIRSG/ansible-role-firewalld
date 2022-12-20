@@ -49,11 +49,13 @@ provisioner:
           - "172.17.0.0/16"
         web_rich_rules: []
       db:
+        vm_firewall_type: "db"
         allow_public_access: false
         open_zone_to_server_ip: "172.17.0.3"
         internal_port: "5432"
         zone_ports: []
       web:
+        vm_firewall_type: "web"
         allow_public_access: true
         zone_ports:
           - "4063"
