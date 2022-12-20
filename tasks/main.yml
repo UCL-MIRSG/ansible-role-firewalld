@@ -206,9 +206,14 @@
   loop: "{{ web_rich_rules | default([]) }}"
   when: vm_firewall_type == "web"
 
+- name: Drop all default connections
+  become: true
+  ansible.builtin.command: firewall-cmd --set-default-zone=drop
+  when: firewall_default_zone.rc != 0 and vm_firewall_type == "db"
+
 - name: Allow or drop default connections
   become: true
   ansible.builtin.command: >-
     firewall-cmd
     --set-default-zone={% if allow_public_access %}public{% else %}drop{% endif %}
-  when: firewall_default_zone.rc != 0
+  when: firewall_default_zone.rc != 0 and vm_firewall_type == "web"
