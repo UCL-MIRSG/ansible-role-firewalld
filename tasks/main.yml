@@ -180,8 +180,17 @@
   become: true
   ansible.builtin.shell: |
     set -o pipefail
+    firewall-cmd --get-default-zone | grep -i drop
+  register: firewall_db_default_zone
+  changed_when: false
+  failed_when: false
+
+- name: Check firewall default zone
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
     firewall-cmd --get-default-zone | grep -i {% if allow_public_access %}public{% else %}drop{% endif %}
-  register: firewall_default_zone
+  register: firewall_web_default_zone
   changed_when: false
   failed_when: false
 
@@ -206,14 +215,14 @@
   loop: "{{ web_rich_rules | default([]) }}"
   when: vm_firewall_type == "web"
 
-- name: Drop all default connections
+- name: Drop all db default connections
   become: true
   ansible.builtin.command: firewall-cmd --set-default-zone=drop
-  when: firewall_default_zone.rc != 0 and vm_firewall_type == "db"
+  when: firewall_db_default_zone.rc != 0 and vm_firewall_type == "db"
 
-- name: Allow or drop default connections
+- name: Allow or drop web default connections
   become: true
   ansible.builtin.command: >-
     firewall-cmd
     --set-default-zone={% if allow_public_access %}public{% else %}drop{% endif %}
-  when: firewall_default_zone.rc != 0 and vm_firewall_type == "web"
+  when: firewall_web_default_zone.rc != 0 and vm_firewall_type == "web"
