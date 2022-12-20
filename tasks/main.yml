@@ -1,5 +1,14 @@
 ---
 # tasks file for ../mirsg-firewall-ansible-role
+- name: Get hosts group
+  ansible.builtin.debug:
+    msg: "{{ group_names }}"
+
+- name: Assert hosts group
+  ansible.builtin.assert:
+    that:
+      - "'web' in {{ group_names }} or 'db' in {{ group_names }}"
+
 - name: Enable firewalld
   become: true
   ansible.builtin.service:
@@ -34,7 +43,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 
 - name: Open internal zone to http
   become: true
@@ -44,7 +53,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 
 - name: Ensure internal zone is open to specified ports
   become: true
@@ -87,7 +96,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 
 - name: Open public zone to http
   become: true
@@ -97,11 +106,11 @@
     immediate: true
     permanent: true
     state: enabled
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 
 - name: Add collaborator networks to public zone - {{ items }}
   become: true
-  when: firewall_for_web_vm and allow_collaborator_access|bool
+  when: "'web' in group_names and allow_collaborator_access|bool"
   ansible.posix.firewalld:
     zone: public
     source: "{{ item }}"
@@ -130,7 +139,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 
 - name: Open work zone to http
   become: true
@@ -140,7 +149,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 
 - name: Ensure work zone is open to specified ports
   become: true
@@ -152,7 +161,7 @@
     state: enabled
   with_items:
     - "{{ zone_ports }}"
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 
 - name: Add to work zone {{ items }}
   become: true
@@ -164,7 +173,7 @@
     state: enabled
   with_items:
     - "{{ default_networks }}"
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 # end work zone config
 
 - name: Check firewall default zone
@@ -184,7 +193,7 @@
     permanent: true
     immediate: true
     state: enabled
-  when: firewall_for_db_vm
+  when: "'db' in group_names"
 
 - name: Add firewall rich rules
   become: true
@@ -195,7 +204,7 @@
     immediate: true
     state: enabled
   loop: "{{ web_rich_rules | default([]) }}"
-  when: firewall_for_web_vm
+  when: "'web' in group_names"
 
 - name: Allow or drop default connections
   become: true

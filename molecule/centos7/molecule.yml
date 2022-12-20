@@ -44,13 +44,11 @@ provisioner:
         web_rich_rules: []
       db:
         allow_public_access: false
-        firewall_for_db_vm: true
         open_zone_to_server_ip: "172.17.0.3"
         internal_port: "5432"
         zone_ports: []
       web:
         allow_public_access: true
-        firewall_for_web_vm: true
         zone_ports:
           - "4063"
           - "4064"
