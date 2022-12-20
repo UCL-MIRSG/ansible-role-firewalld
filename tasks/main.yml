@@ -172,7 +172,7 @@
     immediate: true
     state: enabled
   with_items:
-    - "{{ default_networks }}"
+    - "{{ work_networks }}"
   when: "'web' in group_names"
 # end work zone config
 
@@ -188,7 +188,7 @@
 - name: Open internal port {{ internal_port }}
   become: true
   ansible.posix.firewalld:
-    rich_rule: "rule family=ipv4 source address={{ open_zone_to_server_ip }}/32 port protocol=tcp port={{ internal_port }} accept"
+    rich_rule: "rule family=ipv4 source address={{ open_internal_zone_to_server_ip }}/32 port protocol=tcp port={{ internal_port }} accept"
     zone: internal
     permanent: true
     immediate: true

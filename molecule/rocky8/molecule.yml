@@ -43,7 +43,7 @@ provisioner:
     group_vars:
       docker:
         collaborator_networks: []
-        default_networks:
+        work_networks:
           - "0.0.0.0/0"
         internal_networks:
           - "172.17.0.0/16"
@@ -51,7 +51,7 @@ provisioner:
       db:
         vm_firewall_type: "db"
         allow_public_access: false
-        open_zone_to_server_ip: "172.17.0.3"
+        open_internal_zone_to_server_ip: "172.17.0.3"
         internal_port: "5432"
         zone_ports: []
       web:
