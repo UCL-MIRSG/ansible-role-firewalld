@@ -1,0 +1,62 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+platforms:
+  - name: firewall_db
+    image: centos/systemd
+    image_version: latest
+    command: ""
+    pre_build_image: false
+    privileged: true
+    groups:
+      - db
+      - docker
+  - name: firewall_web
+    image: centos/systemd
+    image_version: latest
+    command: ""
+    pre_build_image: false
+    privileged: true
+    groups:
+      - docker
+      - web
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  log: true
+  playbooks:
+    converge: ../resources/converge.yml
+  inventory:
+    group_vars:
+      docker:
+        additional_networks: []
+        default_networks:
+          - "0.0.0.0/0"
+        internal_networks:
+          - "172.17.0.0/16"
+        web_rich_rules: []
+      db:
+        allow_public_access: false
+        firewall_for_db_vm: true
+        open_zone_to_server_ip: "172.17.0.3"
+        internal_port: "5432"
+        zone_ports: []
+      web:
+        allow_public_access: true
+        firewall_for_web_vm: true
+        zone_ports:
+          - "4063"
+          - "4064"
+verifier:
+  # name: testinfra
+  # directory: ../resources/tests/
+  # lint:
+  #   name: flake8
+  name: ansible

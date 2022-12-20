@@ -9,7 +9,7 @@ lint: |
   ansible-lint
 platforms:
   - name: firewall_db
-    image: ${MOLECULE_DOCKER_IMAGE:-rockylinux:8}
+    image: rockylinux:8
     image_version: latest
     command: ""
     volumes:
@@ -21,7 +21,7 @@ platforms:
       - db
       - docker
   - name: firewall_web
-    image: ${MOLECULE_DOCKER_IMAGE:-rockylinux:8}
+    image: rockylinux:8
     image_version: latest
     command: ""
     volumes:
@@ -38,7 +38,7 @@ provisioner:
     name: ansible-lint
   log: true
   playbooks:
-    converge: ./converge.yml
+    converge: ../resources/converge.yml
   inventory:
     group_vars:
       docker:
