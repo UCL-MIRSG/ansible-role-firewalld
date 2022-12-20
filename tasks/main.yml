@@ -109,7 +109,7 @@
     immediate: true
     state: enabled
   with_items:
-    - "{{ additional_networks | default([]) }}"
+    - "{{ collaborator_networks | default([]) }}"
 # end public zone config
 
 # work zone config
