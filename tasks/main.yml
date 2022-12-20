@@ -43,7 +43,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 
 - name: Open internal zone to http
   become: true
@@ -53,7 +53,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 
 - name: Ensure internal zone is open to specified ports
   become: true
@@ -96,7 +96,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 
 - name: Open public zone to http
   become: true
@@ -106,11 +106,11 @@
     immediate: true
     permanent: true
     state: enabled
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 
 - name: Add collaborator networks to public zone - {{ items }}
   become: true
-  when: "'web' in group_names and allow_collaborator_access|bool"
+  when: vm_firewall_type == "web" and allow_collaborator_access|bool
   ansible.posix.firewalld:
     zone: public
     source: "{{ item }}"
@@ -139,7 +139,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 
 - name: Open work zone to http
   become: true
@@ -149,7 +149,7 @@
     immediate: true
     permanent: true
     state: enabled
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 
 - name: Ensure work zone is open to specified ports
   become: true
@@ -161,7 +161,7 @@
     state: enabled
   with_items:
     - "{{ zone_ports }}"
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 
 - name: Add to work zone {{ items }}
   become: true
@@ -173,7 +173,7 @@
     state: enabled
   with_items:
     - "{{ work_networks }}"
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 # end work zone config
 
 - name: Check firewall default zone
@@ -193,7 +193,7 @@
     permanent: true
     immediate: true
     state: enabled
-  when: "'db' in group_names"
+  when: vm_firewall_type == "db"
 
 - name: Add firewall rich rules
   become: true
@@ -204,7 +204,7 @@
     immediate: true
     state: enabled
   loop: "{{ web_rich_rules | default([]) }}"
-  when: "'web' in group_names"
+  when: vm_firewall_type == "web"
 
 - name: Allow or drop default connections
   become: true
