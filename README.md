@@ -1,18 +1,31 @@
 # Role Name
 
-A brief description of the role goes here.
-
-## Requirements
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This role configures firewalld for use in a dual VM deployment (web app VM + database VM) of XNAT or OMERO.
 
 ## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+See defaults/main.yml for the full list.
 
-## Dependencies
+- `allow_collaborator_access`: Allow access to IP addresses/ranges listed in `collaborator_networks`. Defaults to `false`.
+- `allow_public_access`: Allow access from an IP address. Defaults to `false`.
+- `collaborator_networks`: A list of IP addresses/ranges of UCL collaborating partners. Defaults to `[]`.
+- `work_networks`: List of public UCL IP addresses/ranges requiring access to the `work` zone. Defaults to `[]`.
+- `internal_networks`: List of private internal UCL IP addresses/ranges. Defaults to `[]`.
+- `internal_port`: A port to open on the internal zone (typically for Postgresql). Defaults to `""`.
+- `open_internal_zone_to_server_ip`: Add a rich rule to accept traffic on the `internal` zone on this IP address (typically for connecting the web application to Postgresql). Defaults to `""`.
+- `vm_firewall_type`: Used to determine the services required by the VM firewall configuration. Valid options are `"web"` or `"db"`. A "web" configuration will allow connections via SSH, HTTP and HTTPS for IP address defined in `internal_networks`, `work_networks` and `collaborator_networks`. Defaults to `"web"`.
+- `web_rich_rules`: Any other rich rules to add. Defaults to `[]`.
+- `zone_ports`: Additional ports to open for `internal` and `work` zones.Defaults to `[]`.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Installation
+
+Include in a `requirements.yml` file as follows:
+
+```yaml
+- src: https://github.com/UCL-MIRSG/ansible-role-dual-vm-firewalld.git
+  version: main
+  name: mirsg.firewalld
+```
 
 ## Example Playbook
 
@@ -20,12 +33,4 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
-
-## License
-
-BSD
-
-## Author Information
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+         - { role: mirsg.firewalld, vm_firewall_type: "web" }
