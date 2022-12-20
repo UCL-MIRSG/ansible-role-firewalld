@@ -7,7 +7,7 @@
 - name: Assert hosts group
   ansible.builtin.assert:
     that:
-      - "'web' in {{ vm_firewall_type }} or 'db' in {{ vm_firewall_type }}"
+      - vm_firewall_type == "web" or vm_firewall_type == "db"
 
 - name: Enable firewalld
   become: true
