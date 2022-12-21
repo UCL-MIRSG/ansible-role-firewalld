@@ -8,3 +8,4 @@ on:
 jobs:
   add-issue-to-project:
     uses: UCL-MIRSG/reusable-workflows/.github/workflows/add-to-project.yml@main
+    secrets: inherit
