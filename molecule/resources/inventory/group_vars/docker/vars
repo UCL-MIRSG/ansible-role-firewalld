@@ -1,0 +1,7 @@
+---
+collaborator_networks: []
+work_networks:
+  - "0.0.0.0/0"
+internal_networks:
+  - "172.17.0.0/16"
+web_rich_rules: []

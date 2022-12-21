@@ -1,0 +1,6 @@
+---
+vm_firewall_type: "web"
+allow_public_access: true
+zone_ports:
+  - "4063"
+  - "4064"
