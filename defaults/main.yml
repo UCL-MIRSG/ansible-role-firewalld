@@ -4,15 +4,9 @@ allow_public_access: false
 
 # IP ranges allowing HTTP/HTTPS
 internal_zone_open_services:
-  - http
-  - https
   - ssh
-public_zone_open_services:
-  - http
-  - https
-work_zone_open_services:
-  - http
-  - https
+public_zone_open_services: []
+work_zone_open_services: []
 
 internal_zone_closed_services:
   - samba-client
