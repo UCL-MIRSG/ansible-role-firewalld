@@ -33,6 +33,7 @@ provisioner:
   log: true
   playbooks:
     converge: ../resources/converge.yml
+    verify: ../resources/verify.yml
   inventory:
     links:
       group_vars: ../resources/inventory/group_vars/
