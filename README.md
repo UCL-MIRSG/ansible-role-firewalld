@@ -5,30 +5,65 @@ database VM) of XNAT or OMERO.
 
 ## Role Variables
 
-See defaults/main.yml for the full list.
+See `defaults/main.yml` for the full list.
 
-- `allow_collaborator_access`: Allow access to IP addresses/ranges listed in
-  `collaborator_networks`. Defaults to `false`.
 - `allow_public_access`: Allow access from an IP address. Defaults to `false`.
-- `collaborator_networks`: A list of IP addresses/ranges of UCL collaborating
-  partners. Defaults to `[]`.
-- `work_networks`: List of public UCL IP addresses/ranges requiring access to
-  the `work` zone. Defaults to `[]`.
-- `internal_networks`: List of private internal UCL IP addresses/ranges.
+- `internal_zone_open_services`: A list of services to allow in the `internal`
+  zone. Defaults to:
+  ```
+  - http
+  - https
+  - ssh
+  ```
+- `public_zone_open_services`: A list of services to allow in the `public` zone.
+  Defaults to:
+  ```
+  - http
+  - https
+  ```
+- `work_zone_open_services`: A list of services to allow in the `work` zone.
+  Defaults to:
+  ```
+  - http
+  - https
+  ```
+- `internal_zone_closed_services`: A list of services to not allow in the
+  `internal` zone. Defaults to:
+  ```
+  - samba-client
+  ```
+- `public_zone_closed_services`: A list of services to not allow in the `public`
+  zone. Defaults to:
+  ```
+  - ssh
+  ```
+- `work_zone_closed_services`: A list of services to not allow in the `work`
+  zone. Defaults to:
+  ```
+  - ssh
+  ```
+- `internal_zone_sources`: A list of IP addresses to allow in `internal` zone.
   Defaults to `[]`.
-- `internal_port`: A port to open on the internal zone (typically for
-  Postgresql). Defaults to `""`.
-- `open_internal_zone_to_server_ip`: Add a rich rule to accept traffic on the
-  `internal` zone on this IP address (typically for connecting the web
-  application to Postgresql). Defaults to `""`.
-- `vm_firewall_type`: Used to determine the services required by the VM firewall
-  configuration. Valid options are `"web"` or `"db"`. A "web" configuration will
-  allow connections via SSH, HTTP and HTTPS for IP address defined in
-  `internal_networks`, `work_networks` and `collaborator_networks`. Defaults to
-  `"web"`.
-- `web_rich_rules`: Any other rich rules to add. Defaults to `[]`.
-- `zone_ports`: Additional ports to open for `internal` and `work`
-  zones.Defaults to `[]`.
+- `public_zone_sources`: A list of IP addresses to allow in `public` zone.
+  Defaults to `[]`.
+- `work_zone_sources`: A list of IP addresses to allow in `work` zone. Defaults
+  to `[]`.
+- `internal_zone_ports`: A list of ports to allow in `internal` zone. Defaults
+  to `[]`.
+- `work_zone_ports`: A list of ports to allow in `public` zone. Defaults to
+  `[]`.
+- `public_zone_ports`: A list of ports to allow in `work` zone. Defaults to
+  `[]`.
+- `allow_inter_vm_connections`: A boolean which indicates whether the firewall
+  accepts connections from another VM in the network. Defaults to `false`.
+- `inter_vm_rules`: Rules to apply when `allow_inter_vm_connections` is `true`.
+  Defaults to:
+  ```
+  - ip: ""
+    port: ""
+  ```
+- `rich_rules`: A list of hashes defining rich rules to apply. The zone to apply
+  the rule to should be a key in the hash.
 
 ## Installation
 
@@ -36,7 +71,7 @@ Include in a `requirements.yml` file as follows:
 
 ```yaml
 - src: https://github.com/UCL-MIRSG/ansible-role-dual-vm-firewalld.git
-  version: main
+  version: 2022.12.22.0
   name: mirsg.firewalld
 ```
 

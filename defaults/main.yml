@@ -26,8 +26,8 @@ work_zone_sources: []
 public_zone_sources: []
 
 internal_zone_ports: []
-work_zone_ports: []
 public_zone_ports: []
+work_zone_ports: []
 
 close_zone_services:
   internal: "{{ internal_zone_closed_services }}"
