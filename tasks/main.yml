@@ -1,208 +1,54 @@
 ---
-# tasks file for ../mirsg-firewall-ansible-role
-- name: Get hosts group
-  ansible.builtin.debug:
-    msg: "{{ vm_firewall_type }}"
-
-- name: Assert hosts group
-  ansible.builtin.assert:
-    that:
-      - vm_firewall_type == "web" or vm_firewall_type == "db"
-
-- name: Enable firewalld
-  become: true
-  ansible.builtin.service:
-    name: firewalld
-    state: started
-    enabled: true
-
-# internal zone config
-- name: Ensure internal zone is open to ssh
+# tasks file for ../ansible-role-dual-vm-firewalld
+- name: Close zones to services
   become: true
   ansible.posix.firewalld:
-    zone: internal
-    service: ssh
-    immediate: true
-    permanent: true
-    state: enabled
-
-- name: Ensure no samba-client for internal zone
-  become: true
-  ansible.posix.firewalld:
-    zone: internal
-    service: samba-client
+    zone: "{{ item.0.key }}"
+    service: "{{ item.1 }}"
     immediate: true
     permanent: true
     state: disabled
+  loop: "{{ close_zone_services | dict2items | subelements('value') }}"
 
-- name: Open internal zone to https
+- name: Open zones to services
   become: true
   ansible.posix.firewalld:
-    zone: internal
-    service: https
+    zone: "{{ item.0.key }}"
+    service: "{{ item.1 }}"
     immediate: true
     permanent: true
     state: enabled
-  when: vm_firewall_type == "web"
+  loop: "{{ open_zone_services | dict2items | subelements('value') }}"
 
-- name: Open internal zone to http
+- name: Open zones to sources
   become: true
   ansible.posix.firewalld:
-    zone: internal
-    service: http
-    immediate: true
-    permanent: true
-    state: enabled
-  when: vm_firewall_type == "web"
-
-- name: Ensure internal zone is open to specified ports
-  become: true
-  ansible.posix.firewalld:
-    zone: internal
-    port: "{{ item }}/tcp"
-    immediate: true
-    permanent: true
-    state: enabled
-  with_items:
-    - "{{ zone_ports }}"
-
-- name: Add to internal zone - {{ items }}
-  become: true
-  ansible.posix.firewalld:
-    zone: internal
-    source: "{{ item }}"
+    zone: "{{ item.0.key }}"
+    source: "{{ item.1 }}"
     permanent: true
     immediate: true
     state: enabled
-  with_items:
-    - "{{ internal_networks }}"
-# end internal zone config
+  loop: "{{ zone_sources | dict2items | subelements('value') }}"
 
-# public zone config
-- name: Ensure public zone is not open to ssh
+- name: Open zones to ports
   become: true
   ansible.posix.firewalld:
-    zone: public
-    service: ssh
-    immediate: true
-    permanent: true
-    state: disabled
-
-- name: Open public zone to https
-  become: true
-  ansible.posix.firewalld:
-    zone: public
-    service: https
+    zone: "{{ item.0.key }}"
+    port: "{{ item.1 }}/tcp"
     immediate: true
     permanent: true
     state: enabled
-  when: vm_firewall_type == "web"
+  loop: "{{ zone_ports | dict2items | subelements('value') }}"
 
-- name: Open public zone to http
+- name: Allow inter-vm connections
   become: true
   ansible.posix.firewalld:
-    zone: public
-    service: http
-    immediate: true
-    permanent: true
-    state: enabled
-  when: vm_firewall_type == "web"
-
-- name: Add collaborator networks to public zone - {{ items }}
-  become: true
-  when: vm_firewall_type == "web" and allow_collaborator_access|bool
-  ansible.posix.firewalld:
-    zone: public
-    source: "{{ item }}"
-    permanent: true
-    immediate: true
-    state: enabled
-  with_items:
-    - "{{ collaborator_networks | default([]) }}"
-# end public zone config
-
-# work zone config
-- name: Ensure work zone is not open to ssh
-  become: true
-  ansible.posix.firewalld:
-    zone: work
-    service: ssh
-    immediate: true
-    permanent: true
-    state: disabled
-
-- name: Open work zone to https
-  become: true
-  ansible.posix.firewalld:
-    zone: work
-    service: https
-    immediate: true
-    permanent: true
-    state: enabled
-  when: vm_firewall_type == "web"
-
-- name: Open work zone to http
-  become: true
-  ansible.posix.firewalld:
-    zone: work
-    service: http
-    immediate: true
-    permanent: true
-    state: enabled
-  when: vm_firewall_type == "web"
-
-- name: Ensure work zone is open to specified ports
-  become: true
-  ansible.posix.firewalld:
-    zone: work
-    port: "{{ item }}/tcp"
-    immediate: true
-    permanent: true
-    state: enabled
-  with_items:
-    - "{{ zone_ports }}"
-  when: vm_firewall_type == "web"
-
-- name: Add to work zone {{ items }}
-  become: true
-  ansible.posix.firewalld:
-    zone: work
-    source: "{{ item }}"
-    permanent: true
-    immediate: true
-    state: enabled
-  with_items:
-    - "{{ work_networks }}"
-  when: vm_firewall_type == "web"
-# end work zone config
-
-- name: Check firewall default zone
-  become: true
-  ansible.builtin.shell: |
-    set -o pipefail
-    firewall-cmd --get-default-zone | grep -i drop
-  register: firewall_db_default_zone
-  changed_when: false
-  failed_when: false
-
-- name: Check firewall default zone
-  become: true
-  ansible.builtin.shell: |
-    set -o pipefail
-    firewall-cmd --get-default-zone | grep -i {% if allow_public_access %}public{% else %}drop{% endif %}
-  register: firewall_web_default_zone
-  changed_when: false
-  failed_when: false
-
-- name: Open internal port {{ internal_port }}
-  become: true
-  ansible.posix.firewalld:
-    rich_rule: "rule family=ipv4 source address={{ open_internal_zone_to_server_ip }}/32 port protocol=tcp port={{ internal_port }} accept"
+    rich_rule: "rule family=ipv4 source address={{ item.ip }}/32 port protocol=tcp port={{ item.port }} accept"
     zone: internal
     permanent: true
     immediate: true
     state: enabled
-  when: vm_firewall_type == "db"
+  loop: "{{ inter_vm_rules }}"
 
 - name: Add firewall rich rules
   become: true
@@ -212,17 +58,20 @@
     permanent: true
     immediate: true
     state: enabled
-  loop: "{{ web_rich_rules | default([]) }}"
-  when: vm_firewall_type == "web"
+  loop: "{{ rich_rules | default([]) }}"
 
-- name: Drop all db default connections
+- name: Check firewall default zone
   become: true
-  ansible.builtin.command: firewall-cmd --set-default-zone=drop
-  when: firewall_db_default_zone.rc != 0 and vm_firewall_type == "db"
+  ansible.builtin.shell: |
+    set -o pipefail
+    firewall-cmd --get-default-zone | grep -i {% if allow_public_access %}public{% else %}drop{% endif %}
+  register: firewall_default_zone
+  changed_when: false
+  failed_when: false
 
-- name: Allow or drop web default connections
+- name: Allow or drop default connections
   become: true
   ansible.builtin.command: >-
     firewall-cmd
     --set-default-zone={% if allow_public_access %}public{% else %}drop{% endif %}
-  when: firewall_web_default_zone.rc != 0 and vm_firewall_type == "web"
+  when: firewall_default_zone.rc != 0
