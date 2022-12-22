@@ -1,0 +1,66 @@
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Get services in public zone
+      become: true
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --list-services --zone=public
+      register: public_zone_services
+      changed_when: false
+      failed_when: false
+
+    - name: Test that HTTP and HTTPS are in public zone
+      ansible.builtin.assert:
+        that:
+          - "'http' in public_zone_services.stdout"
+          - "'https' in public_zone_services.stdout"
+      when: vm_firewall_type == "web"
+
+    - name: Get services in internal zone
+      become: true
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --list-services --zone=internal
+      register: internal_zone_services
+      changed_when: false
+      failed_when: false
+
+    - name: Test that HTTP, HTTPS are in internal zone for web VM
+      ansible.builtin.assert:
+        that:
+          - "'http' in internal_zone_services.stdout"
+          - "'https' in internal_zone_services.stdout"
+      when: vm_firewall_type == "web"
+
+    - name: Test that HTTP, HTTPS are not in internal zone for db VM
+      ansible.builtin.assert:
+        that:
+          - "'http' not in internal_zone_services.stdout"
+          - "'https' not in internal_zone_services.stdout"
+      when: vm_firewall_type == "db"
+
+    - name: Test that SSH is in internal zone
+      ansible.builtin.assert:
+        that:
+          - "'ssh' in internal_zone_services.stdout"
+
+    - name: Get firewall default zone
+      become: true
+      ansible.builtin.shell: |
+        set -o pipefail
+        firewall-cmd --get-default-zone
+      register: firewall_default_zone
+      changed_when: false
+      failed_when: false
+
+    - name: Example assertion
+      ansible.builtin.assert:
+        that: "'public' in firewall_default_zone.stdout"
+      when: allow_public_access
+
+    - name: Example assertion
+      ansible.builtin.assert:
+        that: "'drop' in firewall_default_zone.stdout"
+      when: not allow_public_access
