@@ -1,6 +1,9 @@
 ---
-vm_firewall_type: "web"
 allow_public_access: true
-zone_ports:
+internal_networks:
+  - "172.17.0.0/24"
+work_networks:
+  - "0.0.0.0/0"
+internal_zone_ports:
   - "4063"
   - "4064"
