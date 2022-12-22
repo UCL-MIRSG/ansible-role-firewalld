@@ -49,6 +49,7 @@
     immediate: true
     state: enabled
   loop: "{{ inter_vm_rules }}"
+  when: allow_inter_vm_connections
 
 - name: Add firewall rich rules
   become: true

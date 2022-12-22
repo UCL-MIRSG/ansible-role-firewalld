@@ -49,6 +49,7 @@ zone_ports:
   public: "{{ public_zone_ports }}"
   work: "{{ work_zone_ports }}"
 
+allow_inter_vm_connections: false
 inter_vm_rules:
   - ip: ""
     port: ""

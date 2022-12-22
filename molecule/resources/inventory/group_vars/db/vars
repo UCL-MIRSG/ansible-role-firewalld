@@ -4,6 +4,7 @@ internal_networks:
   - "172.17.0.0/24"
 work_networks:
   - "0.0.0.0/0"
+allow_inter_vm_connections: true
 inter_vm_rules:
   - ip: "172.17.0.3"
     port: "5432"
