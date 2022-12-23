@@ -1,29 +1,52 @@
 ---
-# defaults file for ../mirsg-firewall-ansible-role
-vm_firewall_type: "web"
-zone_ports: []
-open_internal_zone_to_server_ip: ""
-internal_port: ""
-# IP ranges allowing HTTP/HTTPS
-internal_networks:
-  # UCL CS (128.16.0.0/20 main network; 128.16.0.0/16 full network)
-  - "128.16.0.0/16"
-work_networks:
-  # UCL public IP addresses (does not include CS network)
-  # see: https://www.ucl.ac.uk/isd/services/get-connected/wired-networks/about-wired-networks/ucl-internet-protocol-ip-addresses
-  - "128.40.0.0/16"
-  - "128.41.0.0/18"
-  - "144.82.0.0/16"
-  - "193.60.221.0/24"
-  - "193.60.224.0/19"
-  - "212.219.75.0/24"
-
-  # UCL routed internal addresses (private addresses that UCL routes internally)
-  # see: https://www.ucl.ac.uk/isd/services/get-connected/wired-networks/use-private-rfc1918-address-space-ucl-internal-network
-  - "10.0.0.0/9"
-  - "172.16.0.0/13"
-  - "192.168.0.0/17"
-collaborator_networks: []
+# defaults file for ../ansible-role-dual-vm-firewalld
 allow_public_access: false
-allow_collaborator_access: false
-web_rich_rules: []
+
+# IP ranges allowing HTTP/HTTPS
+internal_zone_open_services:
+  - ssh
+public_zone_open_services: []
+work_zone_open_services: []
+
+internal_zone_closed_services:
+  - samba-client
+public_zone_closed_services:
+  - ssh
+work_zone_closed_services:
+  - ssh
+
+internal_zone_sources: []
+work_zone_sources: []
+public_zone_sources: []
+
+internal_zone_ports: []
+public_zone_ports: []
+work_zone_ports: []
+
+close_zone_services:
+  internal: "{{ internal_zone_closed_services }}"
+  public: "{{ public_zone_closed_services }}"
+  work: "{{ work_zone_closed_services }}"
+
+open_zone_services:
+  internal: "{{ internal_zone_open_services }}"
+  public: "{{ public_zone_open_services }}"
+  work: "{{ work_zone_open_services }}"
+
+zone_sources:
+  internal: "{{ internal_zone_sources }}"
+  public: "{{ public_zone_sources }}"
+  work: "{{ work_zone_sources }}"
+
+zone_ports:
+  internal: "{{ internal_zone_ports }}"
+  public: "{{ public_zone_ports }}"
+  work: "{{ work_zone_ports }}"
+
+allow_inter_vm_connections: false
+inter_vm_rules:
+  - ip: ""
+    port: ""
+
+# rich_rules should be a list of hashes
+rich_rules: []
