@@ -1,7 +1,14 @@
 ---
-collaborator_networks: []
-work_networks:
-  - "0.0.0.0/0"
-internal_networks:
+internal_zone_closed_services:
+  - samba-client
+public_zone_closed_services:
+  - ssh
+work_zone_closed_services:
+  - ssh
+
+internal_zone_sources:
   - "172.17.0.0/16"
-web_rich_rules: []
+public_zone_sources: []
+work_zone_sources:
+  - "0.0.0.0/0"
+rich_rules: []
