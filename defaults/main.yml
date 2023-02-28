@@ -45,7 +45,7 @@ zone_ports:
 
 allow_inter_vm_connections: false
 inter_vm_rules:
-  - ip: ""
+  - address: ""
     port: ""
 
 # rich_rules should be a list of hashes

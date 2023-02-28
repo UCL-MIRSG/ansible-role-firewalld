@@ -43,7 +43,7 @@
 - name: Allow inter-vm connections
   become: true
   ansible.posix.firewalld:
-    rich_rule: "rule family=ipv4 source address={{ item.ip }}/32 port protocol=tcp port={{ item.port }} accept"
+    rich_rule: "rule family=ipv4 source address={{ item.address }} port protocol=tcp port={{ item.port }} accept"
     zone: internal
     permanent: true
     immediate: true
