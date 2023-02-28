@@ -76,3 +76,4 @@
     firewall-cmd
     --set-default-zone={% if allow_public_access %}public{% else %}drop{% endif %}
   when: firewall_default_zone.rc != 0
+  changed_when: false
