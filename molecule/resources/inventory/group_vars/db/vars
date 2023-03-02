@@ -1,9 +1,5 @@
 ---
 allow_public_access: false
-internal_networks:
-  - "172.17.0.0/24"
-work_networks:
-  - "0.0.0.0/0"
 
 rich_rules:
   - { zone: "internal", rule: "family=ipv4 source address=172.17.0.3/32 port protocol=tcp port=5432 accept" }
