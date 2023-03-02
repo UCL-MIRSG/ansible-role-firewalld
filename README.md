@@ -54,14 +54,6 @@ See `defaults/main.yml` for the full list.
   `[]`.
 - `public_zone_ports`: A list of ports to allow in `work` zone. Defaults to
   `[]`.
-- `allow_inter_vm_connections`: A boolean which indicates whether the firewall
-  accepts connections from another VM in the network. Defaults to `false`.
-- `inter_vm_rules`: Rules to apply when `allow_inter_vm_connections` is `true`.
-  Defaults to:
-  ```yaml
-  - address: ""
-    port: ""
-  ```
 - `rich_rules`: A list of hashes defining rich rules to apply. The zone to apply
   the rule to should be a key in the hash.
 
