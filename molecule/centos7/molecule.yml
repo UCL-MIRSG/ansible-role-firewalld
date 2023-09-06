@@ -17,6 +17,10 @@ platforms:
     groups:
       - db
       - docker
+    tmpfs:
+      - /run
+      - /tmp
+
   - name: firewall_web
     image: centos/systemd
     image_version: latest
@@ -26,6 +30,10 @@ platforms:
     groups:
       - docker
       - web
+    tmpfs:
+      - /run
+      - /tmp
+
 provisioner:
   name: ansible
   lint:
