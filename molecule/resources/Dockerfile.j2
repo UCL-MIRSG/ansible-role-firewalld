@@ -31,4 +31,5 @@ RUN if [ $(command -v apt-get) ]; then export DEBIAN_FRONTEND=noninteractive && 
 RUN sed -i 's/FirewallBackend=nftables/FirewallBackend=iptables/' /etc/firewalld/firewalld.conf
 
 STOPSIGNAL SIGRTMIN+3
+VOLUME ["/sys/fs/cgroup"]
 CMD ["/usr/lib/systemd/systemd"]
