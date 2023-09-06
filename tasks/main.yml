@@ -66,7 +66,7 @@
     set -o pipefail
     firewall-cmd --get-default-zone | grep -i {% if allow_public_access %}public{% else %}drop{% endif %}
   register: firewall_default_zone
-  changed_when: false
+  changed_when: firewall_default_zone.rc != 0
   failed_when: false
 
 - name: Allow or drop default connections
@@ -75,4 +75,4 @@
     firewall-cmd
     --set-default-zone={% if allow_public_access %}public{% else %}drop{% endif %}
   when: firewall_default_zone.rc != 0
-  changed_when: false
+  changed_when: firewall_default_zone.rc != 0
