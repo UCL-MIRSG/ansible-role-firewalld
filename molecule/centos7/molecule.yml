@@ -30,9 +30,6 @@ platforms:
     groups:
       - docker
       - web
-    tmpfs:
-      - /run
-      - /tmp
 
 provisioner:
   name: ansible
