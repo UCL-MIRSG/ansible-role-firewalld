@@ -38,6 +38,7 @@ provisioner:
     name: ansible-lint
   log: true
   playbooks:
+    prepare: ../resources/prepare.yml
     converge: ../resources/converge.yml
   inventory:
     links:
