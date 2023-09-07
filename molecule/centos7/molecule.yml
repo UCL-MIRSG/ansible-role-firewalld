@@ -17,9 +17,6 @@ platforms:
     groups:
       - db
       - docker
-    tmpfs:
-      - /run
-      - /tmp
 
   - name: firewall_web
     image: centos/systemd
