@@ -7,5 +7,9 @@ on:
 
 jobs:
   add-issue-to-project:
-    uses: UCL-MIRSG/.github/workflows/add-to-project.yml@v0.4.0
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: UCL-MIRSG/.github/actions/add-to-project@v0.11.0
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          app_pem: ${{ secrets.APP_PEM }}
