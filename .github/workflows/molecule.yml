@@ -5,26 +5,13 @@ jobs:
   molecule:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 4
+      fail-fast: true
       matrix:
-        image:
-          - centos:7
-          - rockylinux:8
+        molecule_scenario:
+          - centos7
+          # - rocky8
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v3
+      - name: Run `molecule test`
+        uses: UCL-MIRSG/.github/actions/molecule-test@v0.22.0
         with:
-          python-version: 3.9
-      - name: Install dependencies
-        run: |
-          sudo apt-get update && sudo apt-get -y install rsync
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r .github/workflows/requirements.txt
-      - name: Test with molecule
-        run: |
-          molecule test
-        env:
-          PY_COLORS: "1"
-          ANSIBLE_FORCE_COLOR: "1"
-          MOLECULE_DOCKER_IMAGE: ${{ matrix.image }}
+          scenario: ${{ matrix.molecule_scenario }}
