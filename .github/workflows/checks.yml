@@ -14,4 +14,3 @@ jobs:
       - uses: UCL-MIRSG/.github/actions/linting@v0.25.0
         with:
           pre-commit-config: ./.pre-commit-config.yaml
-
