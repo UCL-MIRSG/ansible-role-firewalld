@@ -14,7 +14,8 @@
       when: ansible_service_mgr == 'systemd'
       changed_when: false
       failed_when: systemctl_status.rc > 1
+
   tasks:
-    - name: "Include ansible-role-firewalld"
+    - name: Include ansible-role-firewalld
       ansible.builtin.include_role:
-        name: "ansible-role-firewalld"
+        name: mirsg.firewalld
