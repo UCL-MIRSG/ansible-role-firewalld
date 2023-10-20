@@ -9,7 +9,7 @@ jobs:
       matrix:
         molecule_scenario:
           - centos7
-          # - rocky8
+          - rocky8
     steps:
       - name: Run `molecule test`
         uses: UCL-MIRSG/.github/actions/molecule-test@v0.25.0
