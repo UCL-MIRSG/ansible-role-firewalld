@@ -12,6 +12,6 @@ jobs:
           - rocky8
     steps:
       - name: Run `molecule test`
-        uses: UCL-MIRSG/.github/actions/molecule-test@v0.25.0
+        uses: UCL-MIRSG/.github/actions/molecule-test@v0.26.0
         with:
           scenario: ${{ matrix.molecule_scenario }}
